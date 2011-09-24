@@ -25,7 +25,7 @@ import facebook
 import os.path
 import wsgiref.handlers
 from django.utils import simplejson
-
+import re
 
 from google.appengine.ext import db
 from google.appengine.ext import webapp
@@ -93,23 +93,54 @@ class HomeHandler(BaseHandler):
                     facebook_app_id=FACEBOOK_APP_ID)
         self.response.out.write(template.render(path, args))
 
+def make_event(post):
+   event = {}
+   event["start"] = post["created_time"]
+
+   if "icon" in post:
+      event["icon"] = post["icon"]
+
+   if "picture" in post:
+      event["image"] = post["picture"]
+
+   if "from" in post and "name" in post["from"]:
+      event["title"] = post["from"]["name"]
+   else:
+      event["title"] = "post"
+
+   description = []
+   for field in ["message", "story", "description"]:
+      if field in post:
+         description.append(post[field])
+   
+   event["description"] = "<br>".join(description)
+
+   return event
+
+
 class WallHandler(BaseHandler):
     def get(self):
         graph = self.graph
-        feed = graph.get_connections("me", "feed")
+        pargs = None
         events = list()
-        for post in feed["data"]:
-           event = {}
-           event["start"] = post["created_time"]
-           if "story" in post:
-              event["title"] = post["story"]
+        for i in range(10):
+           if pargs is None:
+              feed = graph.get_connections("me", "feed")
            else:
-              event["title"] = "item"
-           if "message" in post:
-              event["description"] = post["message"]
-           elif "description" in post:
-              event["description"] = post["description"]
-           events.append(event)
+              feed = graph.get_connections("me", "feed", **pargs)
+           if "data" not in feed or len(feed["data"]) == 0:
+              break
+
+           for post in feed["data"]:
+              events.append(make_event(post))
+
+           if "paging" in feed and "next" in feed["paging"]:
+              nextpage = feed["paging"]["next"]
+              until = re.search('until=([0-9]+)', nextpage).group(1)
+              #pargs = [("until", until), ("limit", "25")]
+              pargs = {"until": until, "limit": "25"}
+           else:
+              break
 
         self.response.out.write(simplejson.dumps({"events": events}))
 

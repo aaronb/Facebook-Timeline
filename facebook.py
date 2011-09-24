@@ -37,6 +37,7 @@ import cgi
 import hashlib
 import time
 import urllib
+import logging
 
 # Find a JSON parser
 try:
@@ -96,9 +97,9 @@ class GraphAPI(object):
         args["ids"] = ",".join(ids)
         return self.request("", args)
 
-    def get_connections(self, id, connection_name, **args):
+    def get_connections(self, id, connection_name, **kwargs):
         """Fetchs the connections for given object."""
-        return self.request(id + "/" + connection_name, args)
+        return self.request(id + "/" + connection_name, kwargs)
 
     def put_object(self, parent_object, connection_name, **data):
         """Writes the given object to the graph, connected to the given parent.
@@ -168,6 +169,8 @@ class GraphAPI(object):
             else:
                 args["access_token"] = self.access_token
         post_data = None if post_args is None else urllib.urlencode(post_args)
+        logging.debug("https://graph.facebook.com/" + path + "?" +
+                              urllib.urlencode(args))
         file = urllib.urlopen("https://graph.facebook.com/" + path + "?" +
                               urllib.urlencode(args), post_data)
         try:
