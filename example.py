@@ -18,14 +18,16 @@
 
 """A barebones AppEngine application that uses Facebook for login."""
 
-FACEBOOK_APP_ID = "295525523798240"
-FACEBOOK_APP_SECRET = "2367c6219801835f2e0c0e79e433441c"
+#FACEBOOK_APP_ID = "295525523798240"
+FACEBOOK_APP_ID = "164463363639301"
+FACEBOOK_APP_SECRET = "ad66ca9a41f4b94c98b6ea205d4a95fc"
 
 import facebook
 import os.path
 import wsgiref.handlers
 from django.utils import simplejson
 import re
+import author
 
 from google.appengine.ext import db
 from google.appengine.ext import webapp
@@ -133,6 +135,14 @@ class WallHandler(BaseHandler):
 
            for post in feed["data"]:
               events.append(make_event(post))
+
+           user = self.current_user
+
+           new_wall = author.generate_wall_posts(user, graph, 2)[0]
+           events.append(make_event(new_wall))
+
+           new_post = author.generate_status_updates(user, graph, 2)[0]
+           events.append(make_event(new_post))
 
            if "paging" in feed and "next" in feed["paging"]:
               nextpage = feed["paging"]["next"]
