@@ -13,7 +13,6 @@ LATEST_DATE = '2011-12-31T23:59:00+0000'
 # Conversion to FB objects
 ##################################
 def _to_fb_status(user, graph, message, t): #, likes, comments, commenters):
-    friends = graph.get_connections("me", "friends")
     ret = {}
     ret["id"] = "0" # do something interesting here?
     ret["from"] = {"name": user.name,
@@ -41,10 +40,10 @@ def _to_fb_status(user, graph, message, t): #, likes, comments, commenters):
     #                   "count": len(c)}
 
 def _to_fb_post(user, graph, new_post, new_writer, new_date):
-    friends = graph.get_connections("me", "friends")
+    #friends = graph.get_connections("me", "friends")
     ret = {}
     #ret["id"] = "0" # do something interesting here?
-    ret["from"] = get_friend(new_writer, friends["data"])
+    ret["from"] = get_friend(new_writer)
     ret["to"] = {"data": [{"name":user.name,
                            "id": user.id}
                           ]}
@@ -60,10 +59,10 @@ def _to_fb_post(user, graph, new_post, new_writer, new_date):
     return ret
 
 def _to_fb_picture(user,graph, new_poster, url, comments, commenters, t):
-    friends = graph.get_connections("me", "friends")
+    #friends = graph.get_connections("me", "friends")
     ret = {}
     ret["id"] = "0"
-    ret["from"] = get_friend(new_poster,friends["data"])
+    ret["from"] = get_friend(new_poster)
     ret["source"] = url
     ret["created_time"] = t
     ret["updated_time"] = t
@@ -72,7 +71,7 @@ def _to_fb_picture(user,graph, new_poster, url, comments, commenters, t):
     for i in range(len(comments)):
         new_d = {}
         new_d["id"] = "0_0"
-        new_d["from"] = get_friend(commenters[i],friends["data"])
+        new_d["from"] = get_friend(commenters[i])
         new_d["message"] = comments[i]
         new_d["created_time"] = t
         new_comments.append(new_d)
@@ -252,7 +251,7 @@ def analyze_incoming_wall_posts(user, graph):
 
 # given a name, returns the facebook dictionary corresponding
 # to that friend
-def get_friend(friend_name, friendlist):
+def get_friend(friend_name, friendlist={}):
     #for friend in friendlist:
     #    if friend["name"] == friend_name:
     #        return {"name": friend["name"],
@@ -298,7 +297,7 @@ def generate_status_updates(user, graph, count):
     return updates
 
 def generate_wall_posts(user, graph, count):
-    friends = graph.get_connections("me", "friends")
+    #friends = graph.get_connections("me", "friends")
     #user_messages = analyze_status_updates(user)
     #user_messages_str = ' '.join(user_messages)
     (friend_messages, writers) = analyze_incoming_wall_posts(user, graph)
