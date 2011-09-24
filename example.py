@@ -87,10 +87,12 @@ class BaseHandler(webapp.RequestHandler):
 
 class HomeHandler(BaseHandler):
     def get(self):
-        path = os.path.join(os.path.dirname(__file__), "example.html")
+        path = os.path.join(os.path.dirname(__file__), "index.html")
         args = dict(current_user=self.current_user,
                     facebook_app_id=FACEBOOK_APP_ID)
         self.response.out.write(template.render(path, args))
+    def post(self):
+       self.get()
 
 def make_event(post):
    event = {}
@@ -145,7 +147,7 @@ class WallHandler(BaseHandler):
 
 def main():
     util.run_wsgi_app(webapp.WSGIApplication([
-       (r"/", HomeHandler),
+       ("/", HomeHandler),
        ("/wall", WallHandler)
        ]))
 
