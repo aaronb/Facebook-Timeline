@@ -14,7 +14,7 @@
           var bandInfos = [
           Timeline.createBandInfo({
              eventSource:    eventSource,
-             date:           "Jun 28 2011 00:00:00 GMT",
+             date:           "Aug 24 2011 00:00:00 GMT",
              width:          "90%", 
              intervalUnit:   Timeline.DateTime.WEEK, 
              intervalPixels: 100
@@ -22,7 +22,7 @@
           Timeline.createBandInfo({
              overview:       true,
              eventSource:    eventSource,
-             date:           "Jun 28 2011 00:00:00 GMT",
+             date:           "Aug 24 2011 00:00:00 GMT",
              width:          "10%", 
              intervalUnit:   Timeline.DateTime.YEAR, 
              intervalPixels: 200
@@ -48,8 +48,7 @@
 
     <style type="text/css">
 
-       #switch_theme{margin-left:2em; cursor:pointer; background:#eee; padding:4px 6px; width:120px; text-align:center; font-weight:bold; border:1px solid #999;}
-
+       /*
        .t-highlight1{background-color:#ccf;}
        .p-highlight1{background-color:#fcc;}
 
@@ -58,33 +57,7 @@
 
        .timeline-band-events .important{color:#f00;}		
        .timeline-band-events .small-important{background:#c00;}
-
-
-       /*---------------------------------*/
-
-       .dark-theme {color:#eee;}
-       .dark-theme .timeline-band-0 .timeline-ether-bg{background-color:#333}
-       .dark-theme .timeline-band-1 .timeline-ether-bg{background-color:#111}
-       .dark-theme .timeline-band-2 .timeline-ether-bg{background-color:#222}
-       .dark-theme .timeline-band-3 .timeline-ether-bg{background-color:#444}
-
-
-       .dark-theme .t-highlight1{background-color:#003;}
-       .dark-theme .p-highlight1{background-color:#300;}
-
-       .dark-theme .timeline-highlight-label-start .label_t-highlight1{color:#f00;}
-       .dark-theme .timeline-highlight-label-end .label_t-highlight1{color:#115;}
-
-       .dark-theme .timeline-band-events .important{color:#c00;}		
-       .dark-theme .timeline-band-events .small-important{background:#c00;}
-
-       .dark-theme .timeline-date-label-em{color:#fff;}
-       .dark-theme .timeline-ether-lines{border-color:#555; border-style:solid;}
-       .dark-theme .timeline-ether-highlight{background:#555;}
-
-       .dark-theme .timeline-event-tape,
-       .dark-theme .timeline-small-event-tape{background:#f60;}
-       .dark-theme .timeline-ether-weekends{background:#111;}
+*/
 
        /*---------------------------------*/
 
@@ -110,18 +83,38 @@
        .my-theme .timeline-event-tape,
        .my-theme .timeline-small-event-tape{background:#200;}
        /*.my-theme .timeline-ether-weekends{background:#111;}*/
+
+       .header {
+          border-style: none
+       }
+
+       .header td {
+          border-style: none
+       }
+
+       h1 {
+          font-family: sans-serif;
+       }
+
     </style>
 
  </head>
  <body onload="onLoad();" onresize="onResize();">
-    <div id="body">
-       <fb:login-button autologoutlink="true" perms="read_stream"></fb:login-button>
+    <table class="header" width="100%"><tr>
 
     {% if current_user %}
-    <p><a href="{{ current_user.profile_url }}">
+    
+    <td align="left" width="70px"><a href="{{ current_user.profile_url }}">
        <img src="http://graph.facebook.com/{{ current_user.id }}/picture?type=square"/></a></p>
-    <h1>{{ current_user.name|escape }}'s Timeline</h1>
-    <div id="tl" class="" style="height: 450px; margin: 2em;"></div>
+    <td align="left"><h1>{{ current_user.name|escape }}'s Timeline</h1>
+       
+    {% endif %}
+       <td align="right"><fb:login-button autologoutlink="true" perms="read_stream"></fb:login-button>
+   </table>
+
+    {% if current_user %}
+          
+    <div id="tl" style="height: 400px; margin: 2px; border: 1px solid #aaa"></div>
     {% endif %}
 
     <div id="fb-root"></div>
@@ -142,6 +135,5 @@
       }());
    </script>
     
-</div>    
 </body>
 </html>
