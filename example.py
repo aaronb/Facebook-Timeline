@@ -149,11 +149,11 @@ class WallHandler(BaseHandler):
 
         user = self.current_user
         
-        new_wall = author.generate_wall_posts(user, graph, 10)
+        new_wall = author.generate_wall_posts(user, graph, 20)
         for wall in new_wall:
             events.append(make_event(wall))
         
-        new_post = author.generate_status_updates(user, graph, 10)
+        new_post = author.generate_status_updates(user, graph, 20)
         for post in new_post:
             events.append(make_event(post))
 

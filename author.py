@@ -4,7 +4,7 @@ import logging
 #import facebook
 
 WINDOW_SIZE = 8
-LATEST_DATE = '2011-12-31T23:59:00+0000'
+LATEST_DATE = '2011-12-01T23:59:00+0000'
 
 
 
@@ -246,7 +246,6 @@ def analyze_incoming_wall_posts(user, graph):
         if "message" in post:
             messages.append(post["message"])
         
-    logging.debug(str(writers))
     return (messages, writers)
 
 # given a name, returns the facebook dictionary corresponding
@@ -301,6 +300,7 @@ def generate_wall_posts(user, graph, count):
     #user_messages = analyze_status_updates(user)
     #user_messages_str = ' '.join(user_messages)
     (friend_messages, writers) = analyze_incoming_wall_posts(user, graph)
+    logging.debug(str(writers))
     friend_messages_str = ' '.join(friend_messages)
     
     updates = []
@@ -313,7 +313,7 @@ def generate_wall_posts(user, graph, count):
         
         # generate writer for this post
         new_writer = choose_subset(writers, 1)[0]
-        
+        logging.debug(str(new_writer))
         updates.append(_to_fb_post(user, graph, new_post, new_writer, new_date))
 
     return updates
@@ -324,7 +324,7 @@ def choose_subset(d, size):
         return []
     pop = []
     for key in d:
-        pop.append(key * d[key])
+        pop.extend([key]* d[key])
     if size > len(pop):
         size = len(pop)
     return random.sample(pop, size)
@@ -374,7 +374,9 @@ def generate_text(src, window):
     seed = get_seed(src, window)
     line += seed
 
-    while len(line) < 150:
+    length = random.randint(50, 150)
+
+    while len(line) < length:
         d = find_occurences(seed, src)
         n = choose_next(d)
         line += n
