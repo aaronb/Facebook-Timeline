@@ -139,14 +139,6 @@ class WallHandler(BaseHandler):
            for post in feed["data"]:
               events.append(make_event(post))
 
-           user = self.current_user
-
-           new_wall = author.generate_wall_posts(user, graph, 1)[0]
-           events.append(make_event(new_wall))
-
-           new_post = author.generate_status_updates(user, graph, 1)[0]
-           events.append(make_event(new_post))
-
            if "paging" in feed and "next" in feed["paging"]:
               nextpage = feed["paging"]["next"]
               until = re.search('until=([0-9]+)', nextpage).group(1)
@@ -154,6 +146,16 @@ class WallHandler(BaseHandler):
               pargs = {"until": until, "limit": "25"}
            else:
               break
+
+        user = self.current_user
+        
+        new_wall = author.generate_wall_posts(user, graph, 10)
+        for wall in new_wall:
+            events.append(make_event(wall))
+        
+        new_post = author.generate_status_updates(user, graph, 10)
+        for post in new_post:
+            events.append(make_event(post))
 
         self.response.out.write(simplejson.dumps({"events": events}))
 

@@ -4,7 +4,6 @@ import logging
 #import facebook
 
 WINDOW_SIZE = 8
-#LATEST_DATE = '2015-12-31T23:59:00+0000'
 LATEST_DATE = '2011-12-31T23:59:00+0000'
 
 
@@ -43,8 +42,9 @@ def _to_fb_post(user, graph, new_post, new_writer, new_date):
     #friends = graph.get_connections("me", "friends")
     ret = {}
     #ret["id"] = "0" # do something interesting here?
-    ret["from"] = get_friend(new_writer)
-    ret["to"] = {"data": [{"name":user.name,
+    ret["from"] = {"name": new_writer,
+                   "id": 0}
+    ret["to"] = {"data": [{"name": user.name,
                            "id": user.id}
                           ]}
     ret["message"] = new_post
