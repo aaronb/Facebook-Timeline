@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Facebook Example</title>
+    <script src="http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js" type="text/javascript"></script>
+    <script>
+       var tl;
+       function onLoad() {
+          var eventSource = new Timeline.DefaultEventSource();
+          var bandInfos = [
+          Timeline.createBandInfo({
+             eventSource:    eventSource,
+             date:           "Jun 28 2006 00:00:00 GMT",
+             width:          "70%", 
+             intervalUnit:   Timeline.DateTime.MONTH, 
+             intervalPixels: 100
+          }),
+          Timeline.createBandInfo({
+             overview:       true,
+             eventSource:    eventSource,
+             date:           "Jun 28 2006 00:00:00 GMT",
+             width:          "30%", 
+             intervalUnit:   Timeline.DateTime.YEAR, 
+             intervalPixels: 200
+          })
+          ];
+          bandInfos[1].syncWith = 0;
+          bandInfos[1].highlight = true;
+
+          tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+          Timeline.loadJSON("wall", function(json, url) { 
+             eventSource.loadJSON(json, url); }); 
+       }
+
+       var resizeTimerID = null;
+       function onResize() {
+          if (resizeTimerID == null) {
+             resizeTimerID = window.setTimeout(function() {
+                resizeTimerID = null;
+                tl.layout();
+             }, 500);
+          }
+       }
+    </script>
+ </head>
+ <body onload="onLoad();" onresize="onResize();">
+    <fb:login-button autologoutlink="true" perms="read_stream"></fb:login-button>
+
+    {% if current_user %}
+      <p><a href="{{ current_user.profile_url }}"><img src="http://graph.facebook.com/{{ current_user.id }}/picture?type=square"/></a></p>
+      <p>Hello, {{ current_user.name|escape }}</p>
+    {% endif %}
+
+    <div id="fb-root"></div>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({appId: '{{ facebook_app_id }}', status: true, cookie: true,
+                 xfbml: true});
+        FB.Event.subscribe('{% if current_user %}auth.logout{% else %}auth.login{% endif %}', function(response) {
+          window.location.reload();
+        });
+      };
+      (function() {
+        var e = document.createElement('script');
+        e.type = 'text/javascript';
+        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+        e.async = true;
+        document.getElementById('fb-root').appendChild(e);
+      }());
+   </script>
+
+   <div id="my-timeline" style="height: 150px; border: 1px solid #aaa"></div>
+<noscript>
+This page uses Javascript to show you a Timeline. Please enable Javascript in your browser to see the full page. Thank you.
+</noscript>
+  </body>
+</html>
