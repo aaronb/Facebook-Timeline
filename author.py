@@ -4,7 +4,8 @@ import logging
 #import facebook
 
 WINDOW_SIZE = 8
-LATEST_DATE = '2015-12-31T23:59:00+0000'
+#LATEST_DATE = '2015-12-31T23:59:00+0000'
+LATEST_DATE = '2011-12-31T23:59:00+0000'
 
 
 
@@ -252,13 +253,13 @@ def analyze_incoming_wall_posts(user, graph):
 # given a name, returns the facebook dictionary corresponding
 # to that friend
 def get_friend(friend_name, friendlist):
-    for friend in friendlist:
-        if friend["name"] == friend_name:
-            return {"name": friend["name"],
-                    "id": friend["id"]}
+    #for friend in friendlist:
+    #    if friend["name"] == friend_name:
+    #        return {"name": friend["name"],
+    #                "id": friend["id"]}
 
     # default
-    return {"name": "Unknown",
+    return {"name": friend_name,
             "id" : "0"}
 
 

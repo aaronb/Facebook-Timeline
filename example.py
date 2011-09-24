@@ -141,10 +141,10 @@ class WallHandler(BaseHandler):
 
            user = self.current_user
 
-           new_wall = author.generate_wall_posts(user, graph, 2)[0]
+           new_wall = author.generate_wall_posts(user, graph, 1)[0]
            events.append(make_event(new_wall))
 
-           new_post = author.generate_status_updates(user, graph, 2)[0]
+           new_post = author.generate_status_updates(user, graph, 1)[0]
            events.append(make_event(new_post))
 
            if "paging" in feed and "next" in feed["paging"]:
