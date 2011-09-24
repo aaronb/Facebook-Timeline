@@ -104,10 +104,9 @@ def make_event(post):
    if "picture" in post:
       event["image"] = post["picture"]
 
+   auth = None
    if "from" in post and "name" in post["from"]:
-      event["title"] = post["from"]["name"]
-   else:
-      event["title"] = "post"
+      auth = post["from"]["name"]
 
    description = []
    for field in ["message", "story", "description"]:
@@ -115,6 +114,10 @@ def make_event(post):
          description.append(post[field])
    
    event["description"] = "<br>".join(description)
+
+   event["title"] = event["description"][:40]
+
+   event["description"] += " <b>" + auth + "</b>"
 
    return event
 
