@@ -4,5 +4,10 @@ runtime: python
 api_version: 1
 
 handlers:
-- url: /.*
+- url: /examples/jfk/(.*)
+  static_files: examples/jfk/\1
+  upload: examples/jfk/(.*)
+
+- url: /
   script: example.py
+
